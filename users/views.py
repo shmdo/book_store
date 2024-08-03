@@ -9,7 +9,7 @@ from .models import CustomUser
 class UserRegistrationView(FormView):
     template_name = 'auth/register.html'
     form_class = UserRegistrationForm
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('index')
 
     def form_valid(self, form):
         user = form.save(commit=False)
@@ -21,20 +21,21 @@ class UserRegistrationView(FormView):
         login(self.request, user)
         return super().form_valid(form)
 
+    def form_invalid(self, form):
+        print(form.errors)
+        return super().form_invalid(form)
+
 
 class UserLoginView(LoginView):
     template_name = 'auth/login.html'
-    form_class = UserLoginForm
+    authentication_form = UserLoginForm
 
     def get_success_url(self):
         return reverse_lazy('index')
 
 
 class UserLogoutView(LogoutView):
-    template_name = 'auth/logout.html'
-
-    def get_success_url(self):
-        return reverse_lazy('index')
+    next_page = reverse_lazy('index')
 
 # from django.shortcuts import render, redirect
 # from django.views import View
